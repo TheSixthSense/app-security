@@ -1,0 +1,4 @@
+#jwt
+jwt:
+  secret:
+  issuer: sixsense
