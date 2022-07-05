@@ -71,7 +71,7 @@ public class JwtProvider {
         validateClaims(claims);
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(ROLE.USER.getValue()));
+        authorities.add(new SimpleGrantedAuthority(claims.get("role").toString()));
 
         UserDetails principal = new User(claims.get("user_id").toString(), "", authorities);
 
