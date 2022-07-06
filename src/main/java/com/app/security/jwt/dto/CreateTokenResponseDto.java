@@ -1,4 +1,4 @@
-package com.app.security.dto;
+package com.app.security.jwt.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

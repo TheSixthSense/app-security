@@ -1,7 +1,7 @@
-package com.app.security.auth;
+package com.app.security.core.auth;
 
-import com.app.security.EnumType.ROLE;
-import com.app.security.dto.ValidateTokenResponseDto;
+import com.app.security.jwt.domain.enumType.Role;
+import com.app.security.jwt.dto.ValidateTokenResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,15 +27,14 @@ public class JwtProvider {
     @Value("${jwt.issuer}")
     private String jwtIssuer;
 
-    // TODO : 만료시간 정하기
-    // private static final long TOKEN_EXPIRE_TIME = 9999999L * 60 * 60;
-    private static final long TOKEN_EXPIRE_TIME = 1000L * 60 * 60;  // 1시간
+    @Value("${jwt.expireTime}")
+    private long jwtExpireTime;
 
     public SecretKey getJwtSecret() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    public String createToken(long userId, ROLE role) {
+    public String createToken(long userId, Role role) {
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setIssuedAt(new Date())
@@ -43,7 +42,7 @@ public class JwtProvider {
                 .claim("user_id", userId)
                 .claim("role", role)
                 .signWith(getJwtSecret(), SignatureAlgorithm.HS256)
-                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpireTime))
                 .compact();
     }
 

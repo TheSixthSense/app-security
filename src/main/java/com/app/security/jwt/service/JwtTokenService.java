@@ -1,8 +1,8 @@
-package com.app.security.service;
+package com.app.security.jwt.service;
 
-import com.app.security.EnumType;
-import com.app.security.auth.JwtProvider;
-import com.app.security.dto.CreateTokenResponseDto;
+import com.app.security.core.auth.JwtProvider;
+import com.app.security.jwt.domain.enumType.Role;
+import com.app.security.jwt.dto.CreateTokenResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ public class JwtTokenService {
 
     public CreateTokenResponseDto createToken(long userId) {
         // TODO : DB select, service로 빼기
-        EnumType.ROLE role = EnumType.ROLE.USER;
+        Role role = Role.USER;
 
         String token = jwtProvider.createToken(userId, role);
 

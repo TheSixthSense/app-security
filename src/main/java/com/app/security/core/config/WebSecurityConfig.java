@@ -1,6 +1,6 @@
-package com.app.security.config;
+package com.app.security.core.config;
 
-import com.app.security.filter.JwtTokenFilter;
+import com.app.security.core.filter.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -31,7 +30,7 @@ public class WebSecurityConfig {
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("/create/token").permitAll()
+                        .antMatchers("/auth").permitAll()
                         .antMatchers("/guest/**").permitAll()
                         .antMatchers("/user/**").hasRole("USER")
                         .antMatchers("/admin/**").hasRole("ADMIN")

@@ -1,12 +1,13 @@
-package com.app.security.dto;
+package com.app.security.jwt.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
 public class CreateTokenRequestDto {
+    @NotNull
     private long userId;
 }

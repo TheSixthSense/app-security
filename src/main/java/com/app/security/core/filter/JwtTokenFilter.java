@@ -1,6 +1,6 @@
-package com.app.security.filter;
+package com.app.security.core.filter;
 
-import com.app.security.auth.JwtProvider;
+import com.app.security.core.auth.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

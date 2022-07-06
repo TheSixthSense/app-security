@@ -2,3 +2,4 @@
 jwt:
   secret:
   issuer: sixsense
+  expireTime: 86400000
