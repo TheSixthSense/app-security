@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: develop
+
+server:
+  port: 8080
+
+#jwt
+jwt:
+  secret:
+  issuer: sixsense
+  expireTime: 86400000
