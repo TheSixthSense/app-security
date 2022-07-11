@@ -8,6 +8,6 @@ server:
 
 #jwt
 jwt:
-  secret:
+  secret: 
   issuer: sixsense
-  expireTime: 86400000
+  expireTime: 900000
