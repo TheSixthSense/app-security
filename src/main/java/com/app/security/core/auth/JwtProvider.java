@@ -30,7 +30,7 @@ public class JwtProvider {
     @Value("${jwt.expireTime}")
     private long jwtExpireTime;
 
-    public SecretKey getJwtSecret() {
+    private SecretKey getJwtSecret() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
