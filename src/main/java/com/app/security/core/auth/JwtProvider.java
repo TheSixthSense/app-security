@@ -1,6 +1,6 @@
 package com.app.security.core.auth;
 
-import com.app.security.jwt.domain.enumType.Role;
+import com.app.security.jwt.dto.CreateTokenRequestDto;
 import com.app.security.jwt.dto.ValidateTokenResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -16,7 +16,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -27,22 +30,33 @@ public class JwtProvider {
     @Value("${jwt.issuer}")
     private String jwtIssuer;
 
-    @Value("${jwt.expireTime}")
-    private long jwtExpireTime;
+    @Value("${jwt.accessTime}")
+    private long accessTime;
+
+    @Value("${jwt.refreshTime}")
+    private long refreshTime;
 
     private SecretKey getJwtSecret() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    public String createToken(long userId, Role role) {
+    public String createAccessToken(CreateTokenRequestDto tokenDto) {
+        return createToken(tokenDto, accessTime);
+    }
+
+    public String createRefreshToken(CreateTokenRequestDto tokenDto) {
+        return createToken(tokenDto, refreshTime);
+    }
+
+    private String createToken(CreateTokenRequestDto tokenDto, Long expireTime) {
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuedAt(new Date())
                 .setIssuer(jwtIssuer)
-                .claim("user_id", userId)
-                .claim("role", role)
+                .setIssuedAt(new Date())
+                .claim("role", tokenDto.getRole())
+                .claim("user_id", tokenDto.getUserId())
                 .signWith(getJwtSecret(), SignatureAlgorithm.HS256)
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpireTime))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .compact();
     }
 

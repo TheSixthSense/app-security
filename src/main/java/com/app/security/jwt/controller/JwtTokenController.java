@@ -22,7 +22,7 @@ public class JwtTokenController {
      */
     @PostMapping(value = "/auth")
     public RestResponse<CreateTokenResponseDto> createToken(@Valid @RequestBody CreateTokenRequestDto createTokenRequestDto) {
-        CreateTokenResponseDto responseDto = jwtTokenService.createToken(createTokenRequestDto.getUserId());
+        CreateTokenResponseDto responseDto = jwtTokenService.createToken(createTokenRequestDto);
         return RestResponse
                 .withData(responseDto)
                 .withUserMessageKey("success.auth.token.create")

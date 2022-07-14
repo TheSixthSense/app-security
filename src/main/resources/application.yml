@@ -10,4 +10,5 @@ server:
 jwt:
   secret:
   issuer: sixsense
-  expireTime: 86400000
+  expireTime: 900000
+  refreshTime: 2592000000
