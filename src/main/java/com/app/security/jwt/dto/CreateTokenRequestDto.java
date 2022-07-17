@@ -14,4 +14,9 @@ public class CreateTokenRequestDto {
     @NotNull
     private long userId;
     private Role role = Role.USER;
+
+    public CreateTokenRequestDto(long userId) {
+        this.userId = userId;
+        this.role = Role.USER;
+    }
 }

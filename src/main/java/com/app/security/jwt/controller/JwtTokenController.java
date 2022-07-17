@@ -35,7 +35,7 @@ public class JwtTokenController {
      * JWT refresh
      */
     @PostMapping(value = "/auth/refresh")
-    public RestResponse<RefreshTokenResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) {
+    public RestResponse<RefreshTokenResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) throws Exception {
         RefreshTokenResponseDto responseDto = jwtTokenService.refreshToken(refreshTokenRequestDto);
         return RestResponse
                 .withData(responseDto)

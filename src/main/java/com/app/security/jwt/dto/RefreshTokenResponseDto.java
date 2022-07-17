@@ -12,5 +12,6 @@ import javax.validation.constraints.NotNull;
 public class RefreshTokenResponseDto {
     @NotNull
     private long userId;
+    private String accessToken;
     private String refreshToken;
 }
