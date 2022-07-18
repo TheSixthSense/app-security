@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -33,17 +34,17 @@ public class JwtTokenService {
 
         String newAccessToken = jwtProvider.createAccessToken(requestDto);
         String newRefreshToken = jwtProvider.createRefreshToken(requestDto);
+        LocalDateTime expireTime = jwtProvider.getExpireTime(newRefreshToken);
 
         refreshTokenRepository.findByUserId(requestDto.getUserId())
                 .ifPresentOrElse(
-                        refreshToken -> refreshToken.updateRefreshToken(newRefreshToken, jwtProvider.getExpireTime(newRefreshToken)),
+                        refreshToken -> refreshToken.updateRefreshToken(newRefreshToken, expireTime),
                         () -> refreshTokenRepository.save(RefreshToken.builder()
                                 .userId(requestDto.getUserId())
                                 .refreshToken(newRefreshToken)
-                                .expiredTime(jwtProvider.getExpireTime(newRefreshToken))
+                                .expiredTime(expireTime)
                                 .build())
                 );
-
 
         return CreateTokenResponseDto.builder()
                 .userId(requestDto.getUserId())
