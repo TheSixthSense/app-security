@@ -1,16 +1,19 @@
 package com.app.security.jwt.entity;
 
 import com.app.security.common.entity.BaseTimeEntity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@DynamicUpdate
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "refresh_token")
 public class RefreshToken extends BaseTimeEntity {
 
@@ -35,12 +38,8 @@ public class RefreshToken extends BaseTimeEntity {
         this.expiredTime = expiredTime;
     }
 
-    public RefreshToken updateRefreshToken(String token, LocalDateTime expiredTime) {
-        return RefreshToken.builder()
-                .id(this.id)
-                .userId(this.userId)
-                .refreshToken(token)
-                .expiredTime(expiredTime)
-                .build();
+    public void updateRefreshToken(String refreshToken, LocalDateTime expiredTime) {
+        this.refreshToken = refreshToken;
+        this.expiredTime = expiredTime;
     }
 }

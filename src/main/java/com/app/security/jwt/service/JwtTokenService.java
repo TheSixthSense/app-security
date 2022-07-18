@@ -31,25 +31,24 @@ public class JwtTokenService {
 
     public CreateTokenResponseDto createToken(CreateTokenRequestDto requestDto) {
 
-        String accessToken = jwtProvider.createAccessToken(requestDto);
-        String refreshToken = jwtProvider.createRefreshToken(requestDto);
+        String newAccessToken = jwtProvider.createAccessToken(requestDto);
+        String newRefreshToken = jwtProvider.createRefreshToken(requestDto);
 
         refreshTokenRepository.findByUserId(requestDto.getUserId())
                 .ifPresentOrElse(
-                        user -> refreshTokenRepository.save(
-                                user.updateRefreshToken(refreshToken, jwtProvider.getExpireTime(refreshToken))
-                        ),
+                        refreshToken -> refreshToken.updateRefreshToken(newRefreshToken, jwtProvider.getExpireTime(newRefreshToken)),
                         () -> refreshTokenRepository.save(RefreshToken.builder()
                                 .userId(requestDto.getUserId())
-                                .refreshToken(refreshToken)
-                                .expiredTime(jwtProvider.getExpireTime(refreshToken))
+                                .refreshToken(newRefreshToken)
+                                .expiredTime(jwtProvider.getExpireTime(newRefreshToken))
                                 .build())
                 );
 
+
         return CreateTokenResponseDto.builder()
                 .userId(requestDto.getUserId())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
                 .build();
     }
 
