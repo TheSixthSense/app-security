@@ -11,6 +11,6 @@ public class DateUtil {
      * Date -> LocalDateTime
     */
     public static LocalDateTime changeLocalDateTime(Date date) {
-        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.of("Asia/Seoul"));
     }
 }
