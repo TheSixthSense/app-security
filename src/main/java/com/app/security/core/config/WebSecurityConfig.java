@@ -30,7 +30,7 @@ public class WebSecurityConfig {
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("/auth").permitAll()
+                        .antMatchers("/auth/**").permitAll()
                         .antMatchers("/guest/**").permitAll()
                         .antMatchers("/user/**").hasRole("USER")
                         .antMatchers("/admin/**").hasRole("ADMIN")

@@ -1,7 +1,8 @@
 package com.app.security.core.auth;
 
-import com.app.security.jwt.domain.enumType.Role;
-import com.app.security.jwt.dto.ValidateTokenResponseDto;
+import com.app.security.core.exception.JWTException;
+import com.app.security.jwt.dto.CreateTokenRequestDto;
+import com.app.security.util.DateUtil;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -16,7 +17,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import static com.app.security.core.constants.ErrorCode.*;
 
 @Slf4j
 @Component
@@ -27,34 +34,38 @@ public class JwtProvider {
     @Value("${jwt.issuer}")
     private String jwtIssuer;
 
-    @Value("${jwt.expireTime}")
-    private long jwtExpireTime;
+    @Value("${jwt.accessTime}")
+    private long accessTime;
 
-    public SecretKey getJwtSecret() {
+    @Value("${jwt.refreshTime}")
+    private long refreshTime;
+
+    private SecretKey getJwtSecret() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    public String createToken(long userId, Role role) {
+    public String createAccessToken(CreateTokenRequestDto tokenDto) {
+        return createToken(tokenDto, accessTime);
+    }
+
+    public String createRefreshToken(CreateTokenRequestDto tokenDto) {
+        return createToken(tokenDto, refreshTime);
+    }
+
+    private String createToken(CreateTokenRequestDto tokenDto, Long expireTime) {
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-                .setIssuedAt(new Date())
                 .setIssuer(jwtIssuer)
-                .claim("user_id", userId)
-                .claim("role", role)
+                .setIssuedAt(new Date())
+                .claim("role", tokenDto.getRole())
+                .claim("user_id", tokenDto.getUserId())
                 .signWith(getJwtSecret(), SignatureAlgorithm.HS256)
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpireTime))
+                .setExpiration(new Date(System.currentTimeMillis() + expireTime))
                 .compact();
     }
 
-    public ValidateTokenResponseDto getTokenInfo(String token) {
-        Claims claims = parseClaims(token);
-
-        return ValidateTokenResponseDto.builder()
-                .userId(claims.get("user_id", Long.class))
-                .role(claims.get("role").toString())
-                .issuedAt(claims.getIssuedAt())
-                .expiredAt(claims.getExpiration())
-                .build();
+    public LocalDateTime getExpireTime(String token) {
+        return DateUtil.changeLocalDateTime(parseClaims(token).getExpiration());
     }
 
     public Claims parseClaims(String token) {
@@ -80,9 +91,11 @@ public class JwtProvider {
     public void validateClaims(Claims claims) {
         if (Objects.isNull(claims)) {
             log.error("[JWT Token Filter Error]: claims User Not Found. Please check header.");
+            throw new JWTException(INVALID_CLAIMS, "User Not Found");
         }
         if (Objects.isNull(claims.get("role"))) {
             log.error("[JWT Token Filter Error]: User Not Found. Please check header.");
+            throw new JWTException(INVALID_CLAIMS, "Role Not Found");
         }
     }
 
@@ -95,14 +108,16 @@ public class JwtProvider {
             return true;
         } catch (MalformedJwtException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
+            throw new JWTException(INVALID_TOKEN, "MalformedJwtException");
         } catch (ExpiredJwtException e) {
             log.error("JWT token is expired: {}", e.getMessage());
+            throw new JWTException(EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.error("JWT token is unsupported: {}", e.getMessage());
+            throw new JWTException(INVALID_TOKEN, "UnsupportedJwtException");
         } catch (IllegalArgumentException e) {
             log.error("JWT claims string is empty: {}", e.getMessage());
+            throw new JWTException(INVALID_TOKEN, "IllegalArgumentException");
         }
-
-        return false;
     }
 }

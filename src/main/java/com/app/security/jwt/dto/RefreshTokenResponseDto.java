@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Date;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Builder
 @AllArgsConstructor
-public class ValidateTokenResponseDto {
+public class RefreshTokenResponseDto {
+    @NotNull
     private long userId;
-    private String role;
-    private Date issuedAt;
-    private Date expiredAt;
+    private String accessToken;
+    private String refreshToken;
 }

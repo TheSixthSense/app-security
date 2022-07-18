@@ -9,5 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateTokenResponseDto {
     private long userId;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 }

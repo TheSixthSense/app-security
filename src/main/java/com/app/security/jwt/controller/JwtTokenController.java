@@ -3,6 +3,8 @@ package com.app.security.jwt.controller;
 import com.app.security.core.response.RestResponse;
 import com.app.security.jwt.dto.CreateTokenRequestDto;
 import com.app.security.jwt.dto.CreateTokenResponseDto;
+import com.app.security.jwt.dto.RefreshTokenRequestDto;
+import com.app.security.jwt.dto.RefreshTokenResponseDto;
 import com.app.security.jwt.service.JwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +24,22 @@ public class JwtTokenController {
      */
     @PostMapping(value = "/auth")
     public RestResponse<CreateTokenResponseDto> createToken(@Valid @RequestBody CreateTokenRequestDto createTokenRequestDto) {
-        CreateTokenResponseDto responseDto = jwtTokenService.createToken(createTokenRequestDto.getUserId());
+        CreateTokenResponseDto responseDto = jwtTokenService.createToken(createTokenRequestDto);
         return RestResponse
                 .withData(responseDto)
                 .withUserMessageKey("success.auth.token.create")
                 .build();
     }
 
+    /**
+     * JWT refresh
+     */
+    @PostMapping(value = "/auth/refresh")
+    public RestResponse<RefreshTokenResponseDto> refreshToken(@Valid @RequestBody RefreshTokenRequestDto refreshTokenRequestDto) throws Exception {
+        RefreshTokenResponseDto responseDto = jwtTokenService.refreshToken(refreshTokenRequestDto);
+        return RestResponse
+                .withData(responseDto)
+                .withUserMessageKey("success.auth.token.create")
+                .build();
+    }
 }
