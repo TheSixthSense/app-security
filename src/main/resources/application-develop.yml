@@ -27,7 +27,7 @@ server:
 
 #jwt
 jwt:
-  secret: 2fc15cbaa4f63c5834aff90c21f6ed0e0f5a426d045f01afeb5039eb567f7155923da92e9c2e641370a6010a2b5f7be522d9ca6ca64b23f8c7ab9648acb487b8
+  secret: 
   issuer: sixsense
   accessTime: 900000
   refreshTime: 2592000000
